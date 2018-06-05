@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title> Memory game</title>
+		<meta name="description" content="  "/>
+		
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		
+		<script type="text/javascript" src="script.js"></script> 
+       
+		
+        <!--[if IE]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->       
+    </head>
+    <body> 
+		<div id="gameContainer">
+			<div id="optionsPartDiv">
+				<h4>Wybierz tablicę </h4>				
+				<label for="mala">Mała (4x3) </label>
+				<input type="radio" name="radioButton" value="mala" id="mala" checked></input><br>
+				<label for="duza">Duża (6x5) </label>
+				<input type="radio" name="radioButton" value="duza" id="duza"><label</input><br><br><br>
+				<button id="button">Resetuj grę</button>
+			</div>
+			<div id="result">
+			</div>
+			<div id ="tablePartDiv">
+			</div>
+		</div>
+    </body>
+</html>
