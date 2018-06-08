@@ -1,6 +1,19 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 	
+	const allTd = document.getElementsByTagName("td");	
+	let result = document.getElementById("result"); 
+	const clicked = [];
+	const invisible = [];
+	const clickNumber = [];
+	const smallTable = document.getElementById("mala");
+	const largeTable = document.getElementById("duza");
+	const resetButton = document.getElementById("button");
+	const colorsTab = ["red", "blue", "green", "yellow", "oragne", "rose", "lila", "sea", "green2", 
+							"pink", "purple", "creme", "gray", "bronze", "green3"];
+							
+	
+	// Function draw table
 	function drawTable(x,y) {
 		const table = document.createElement("table");
 		table.id = "table";
@@ -11,121 +24,123 @@ document.addEventListener('DOMContentLoaded', function() {
 						for (let j=1; j <= x; j++) {
 							const td = tr.appendChild(document.createElement("td"));
 							td.classList.add("tdBgColor");
-							td.setAttribute("data-color", "");
 						}
 		}
 	}
+
 	
-	drawTable(4,3);
-	
-	function addListenetrs() { 
-		const smallTable = document.getElementById("mala");
-		const largeTable = document.getElementById("duza");
-		const resetButton = document.getElementById("button");
-		
-		// Zmiana tablicy na mniejsza
-		smallTable.addEventListener("click", function (){
-			const colorsTabSmall = ["#ff0000", "#8a0000", "#ffa2f5", "#ee00d5", "#640059", "#b187ff",   "#ff0000", "#8a0000", "#ffa2f5", "#ee00d5", "#640059", "#b187ff",];
-			const getTable = document.getElementById("table");
-			getTable.parentNode.removeChild(table)
-			drawTable(4,3);
-			drawPictures(colorsTabSmall);
-			colorClick();
-		})
-		// Zmiana tablicy na wieksza
-		largeTable.addEventListener("click", function (){
-			const colorsTabLarge = ["#ff0000", "#8a0000", "#ffa2f5", "#ee00d5", "#640059", "#b187ff", "#81acfb", "#00049e", "#47f3fe", "#007178", "#000000", "#00563f", "#28ff60", "#dcfc01", "#fca001",   "#ff0000", "#8a0000", "#ffa2f5", "#ee00d5", "#640059", "#b187ff", "#81acfb", "#00049e", "#47f3fe", "#007178", "#000000", "#00563f", "#28ff60", "#dcfc01", "#fca001" ];
-			const getTable = document.getElementById("table");
-			getTable.parentNode.removeChild(table)
-			drawTable(6,5);
-			drawPictures(colorsTabLarge);
-			colorClick();
-		})
-		// Reset gry
-		resetButton.addEventListener("click", resetGame);
+	function addListenetrs() { 		
+		smallTable.addEventListener("click", function() {makeTable(4,3)});
+		largeTable.addEventListener("click", function() {makeTable(6,5)});
+		// Reset game
+		resetButton.addEventListener("click", function() {resetGame()});
 	}
 	
-	addListenetrs();
+	// Draw table
+	function makeTable(a,b) {
+		const getTable = document.getElementById("table");
+		getTable.parentNode.removeChild(table)
+		drawTable(a,b);
+		drawPictures(randomTab((a*b)/2));
+		colorClick();
+		result.innerText = "";
+	}
 	
+	// Add colors to td
 	function drawPictures(arr) {
-		//console.log(arr);
-		const allTd = document.getElementsByTagName("td"); //powtorzony
 		for (let i=0; i < allTd.length; i++ ) {
 				let randomColor = Math.floor(Math.random() * arr.length);
-				let tdColors = allTd[i].setAttribute("data-color", arr[randomColor]);
+				const color = allTd[i].classList.add(arr[randomColor]);
 				arr.splice(randomColor, 1);
 			} 
 	}
 	
-	drawPictures(["#ff0000", "#8a0000", "#ffa2f5", "#ee00d5", "#640059", "#b187ff",   "#ff0000", "#8a0000", "#ffa2f5", "#ee00d5", "#640059", "#b187ff"]);
+	// How much color should be in array with colors
+	function randomTab(z) {
+		let temp = colorsTab.slice(0,z).concat(colorsTab.slice(0,z));
+		return temp;
+	}
 	
-	function showColor(e) {
-		const clicked = document.getElementsByName("clicked");
-		const animation = document.getElementsByClassName("animation");
-		const allTd = document.getElementsByTagName("td");	//powtorzony
+	// Show and hide colors when click on td
+	function showColor(td) {
+		clickNumber.push(1);
 			// Block click on invisible colors
-				if (e.target.closest("td").classList.contains("invisible")) {
+				if (td.classList.contains("invisible")) {
+					return;
+				}
+			// Check click number - block more than two click
+				if (clickNumber.length > 2) {
 					return;
 				}
 			// Show colors
 				if (clicked.length < 2) {
-					const color = e.target.closest("td").getAttribute("data-color");
-					//console.log(e.target.closest("td"));
-					e.target.closest("td").style.backgroundColor = color;
-					e.target.closest("td").setAttribute("name", "clicked");
+					td.classList.remove("tdBgColor");
+					td.setAttribute("name", "clicked");
+					clicked.push(td);
+					if (clicked[0] == clicked[1] ) {	// If some td was clicked twice, then last click is remove
+						clicked.splice(1,1);
+						clickNumber.length = 1;
 					}
+				} 
 			// Hide colors
 				if (clicked.length == 2) {
-					for ( let i=0; i < allTd.length; i++) { 
-						allTd[i].removeEventListener("click", showColor);
-					}
 					setTimeout(function() {
-						if (clicked[0].getAttribute("data-color") == clicked[1].getAttribute("data-color")) {
-							for (let i=0; i < 2; i++) {
-								clicked[i].classList.add("invisible");
-							}
-						// Check result
-							if (document.getElementsByClassName("invisible").length == allTd.length) {
-								result();
-							}
-						}
-						for (let i=0; i < 2; i++) { 
-							clicked[0].removeAttribute("style");
-							clicked[0].removeAttribute("name");
-						}
-						for ( let i=0; i < allTd.length; i++) { 
-							allTd[i].addEventListener("click", showColor);
-						}					
-					}, 500 );
+						sleep(clicked, td)
+					}, 500);
+			return;	
 				}
 	}
 	
-	function result(){
-		let result = document.getElementById("result");
-		result.innerText = "WYGRANA!";
+	function sleep(clicked, td) {
+			// Check if two clicked td colors are the same
+			if (clicked[0].className == clicked[1].className) {
+				for (let i=0; i < 2; i++) {
+					clicked[i].className = "";
+					clicked[i].classList.add("invisible");
+					invisible.push(1);
+				}
+				// Check result
+				if (invisible.length == allTd.length) {
+					showWin("WYGRANA!");
+				}
+			} 
+			// Hide colors
+			for (let i=0; i < 2; i++) { 
+				clicked[i].classList.add("tdBgColor");
+				clicked[i].removeAttribute("name");
+			}	
+			clicked.splice(0,2);
+			clickNumber.splice(0,clickNumber.length);
+		}	
+	
+	// Result function
+	function showWin(textt){
+		result.innerText = textt;
 	}
 	
+	// Check if td was clicked
 	function colorClick() {
-		const allTd = document.getElementsByTagName("td");	//powtorzony
 		for ( let i=0; i < allTd.length; i++) { 
-			allTd[i].addEventListener("click", showColor) 
-	}	}
+			allTd[i].addEventListener("click", function() {showColor(allTd[i])});  
+	}	}	
 	
-	colorClick();	
-	
+	// Reset game function
 	function resetGame() {
-		const allTd = document.getElementsByTagName("td");	//powtorzony
-		let result = document.getElementById("result"); // powtorzony
 		for (let i=0; i < allTd.length; i++) { 
 			allTd[i].classList.remove("invisible");
 		}
 		result.innerText = "";
-		if (document.getElementById("mala").checked) { 
-			drawPictures(["#ff0000", "#8a0000", "#ffa2f5", "#ee00d5", "#640059", "#b187ff",   "#ff0000", "#8a0000", "#ffa2f5", "#ee00d5", "#640059", "#b187ff"]);
+		if (smallTable.checked) { 
+			makeTable(4,3);
 		}
-		if (document.getElementById("duza").checked) { 
-			drawPictures(["#ff0000", "#8a0000", "#ffa2f5", "#ee00d5", "#640059", "#b187ff", "#81acfb", "#00049e", "#47f3fe", "#007178", "#000000", "#00563f", "#28ff60", "#dcfc01", "#fca001",   "#ff0000", "#8a0000", "#ffa2f5", "#ee00d5", "#640059", "#b187ff", "#81acfb", "#00049e", "#47f3fe", "#007178", "#000000", "#00563f", "#28ff60", "#dcfc01", "#fca001"]);
+		if (largeTable.checked) { 
+			makeTable(6,5);
 		}
 	}
+	
+	drawTable(4,3);
+	addListenetrs();
+	drawPictures(randomTab((4*3)/2));
+	colorClick();
 	
 });

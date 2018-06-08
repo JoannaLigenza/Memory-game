@@ -8,7 +8,6 @@
 	display: block;
 	text-align: center;
 	margin: 20px auto;
-	border: 1px solid black;
 }
 
 table {
@@ -18,22 +17,80 @@ table {
 td {
 	width: 100px;
 	height: 100px;
-	border: 1px solid black;
 	border-radius: 5px;
 }
 
 #result {
 	height: 50px;
-	border: 1px solid black;
 	text-align: center;
 }
 
-.tdBgColor {
-	background-color: #aabae5;
-}
 
 .invisible {
 	background-color: #ffffff;
 	box-shadow: 5px 5px 5px grey inset;
 }
 
+.red {
+	background-color: #ff0000;
+}
+
+.blue {
+	background-color: #0000ff;
+}
+
+.green {
+	background-color: #009933;
+}
+
+.yellow {
+	background-color: #ffff00;
+}
+
+.oragne {
+	background-color: #f79209;
+}
+
+.rose {
+	background-color: #ffb3e6;
+}
+
+.lila {
+	background-color: #df80ff;
+}
+
+.sea {
+	background-color: #00ffff;
+}
+
+.green2 {
+	background-color: #4dff4d;
+}
+
+.pink {
+	background-color: #ff0066;
+}
+
+.purple {
+	background-color: #660033;
+}
+
+.creme {
+	background-color: #efd88f;
+}
+
+.gray {
+	background-color: #aa9e8c;
+}
+
+.bronze {
+	background-color: #844404;
+}
+
+.green3 {
+	background-color: #99ff99;
+}
+
+.tdBgColor {
+	background-color: #aabae5;
+}
